@@ -1,28 +1,43 @@
-const db = require('./BD.js');
+const db = require('./db');
 const { ipcMain } = require('electron')
 
 async function buscarAlunos() {
 
-    const resultado = await db.query('SELECT * FROM public.alunos order by id')
+    const resultado = await db.query('SELECT * FROM alunos order by id')
 
     return resultado.rows;
+
 }
 
-async function deletarAlunos(event, pId) {
-    console.log(event)
-    const resultado = await db.query('DELETE FROM public.alunos WHERE id= $1',[pId])
-    return resultado.rowCount
+async function deletarAluno(event,pId){    
+    console.log('deletar ',pId)
+    console.log(event);
+    const resultado = await db.query('DELETE FROM alunos WHERE ID = $1',[pId]);
+    return resultado.rows;
+
 }
+
+async function atualizarAluno(event, pId ,pNome, pMatricula ){
+    console.log('att', pId)
+    console.log('teste handler', pId, pNome, pMatricula)
+    const result = await db.query('UPDATE alunos SET nome=$1, matricula=$2 WHERE ID =$3',[pNome, pMatricula, pId])
+    return result.rows
+    
+}
+
+async function inserirAluno(event, pNome, pMatricula){
+    const result = await db.query('INSERT INTO alunos(nome, matricula) VALUES($1, $2)',[pNome, pMatricula])
+    return result.rows
+}
+//criar duas funções e tacar para aluno.js
 
 function registrarAlunoHandler() {
     ipcMain.handle('buscar-alunos', buscarAlunos);
-    ipcMain.handle('deletar-alunos', deletarAlunos)
+    ipcMain.handle('deletar-alunos', deletarAluno);
+    ipcMain.handle('att-alunos', atualizarAluno);
+    ipcMain.handle('insert-alunos', inserirAluno)
 }
-
-
-
 
 module.exports = {
     registrarAlunoHandler
-
 }

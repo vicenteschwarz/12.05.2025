@@ -1,76 +1,141 @@
+
+
 const paragrafo = document.getElementById('teste');
 const tabelaAluno = document.getElementById('alunosTableDados');
-const modalNomeAluno = document.getElementById('aluno-nome')
-const modalMatriculaAluno = document.getElementById('aluno-matricula')
-const modalIdAluno = document.getElementById('aluno-id')
+const modalNomeAluno = document.getElementById('aluno-nome');
+const modalMatriculaAluno = document.getElementById('aluno-matricula');
+const modalIDAluno = document.getElementById('aluno-id');
+const botaoExcluir = document.getElementById('btn-excluir');
+botaoExcluir.addEventListener('click',excluirAluno)
+
+const botaoAtt = document.getElementById('btn-salvar')
+botaoAtt.addEventListener('click', atualizaOuInserirAluno)
+
+const botaoIncluir = document.getElementById('btn-incluir')
+botaoIncluir.addEventListener('click',incluir)
+
+function incluir(){
+    mostrarDetalhes('','','')
+}
+
+function mostrarDetalhes(nome,matricula,id){
+    modalIDAluno.value = id;
+    modalMatriculaAluno.value = matricula;
+    modalNomeAluno.value = nome ;
+}
+
+async function atualizaOuInserirAluno(){
+    const pID = modalIDAluno.value;
+    const pNome = modalNomeAluno.value;
+    const pMatricula = modalMatriculaAluno.value;
+
+    if (pID === "") {
+        console.log("vou inserir o aluno ", pNome);
+        await insereAluno();
+        return
+    } else {
+        console.log("vou atualizar o id ", pID);
+        await atualizaAluno();
+    }
+    carregarAlunos();
+    mostrarDetalhes("", "", "");
+}
+
+async function insereAluno() {
+    const pNome = modalNomeAluno.value;
+    const pMatricula = modalMatriculaAluno.value;
+
+    console.log("vou inserir o aluno ", pNome);
+
+    const retorno = await window.senacAPI.inserirAlunos(pNome, pMatricula);
+
+    carregarAlunos();
+    mostrarDetalhes("", "", "");
+}
+
+async function atualizaAluno() {
+    const pID = modalIDAluno.value;
+    const pNome = modalNomeAluno.value;
+    const pMatricula = modalMatriculaAluno.value;
+
+    console.log("vou atualizar o id ", pID);
+
+    const retorno = await window.senacAPI.atualizarAlunos(pNome, pMatricula, pID);
+
+    carregarAlunos();
+    mostrarDetalhes("", "", "");
+}
+
+async function excluirAluno(){
+    const pID = modalIDAluno.value;
+    console.log("vou deletar o id ", pID);
+
+    const retorno = await window.senacAPI.excluirAlunos(pID);
+
+    //após deleção atualiza a lista de alunos
+    mostrarDetalhes("","","");
+    carregarAlunos();
+}
 
 
-async function carregarAlunos() {
+async function carregarAlunos(){
 
+    
     const listaAlunos = await window.senacAPI.buscarAlunos();
+    tabelaAluno.innerHTML = "";
 
-
+     console.log(listaAlunos)
     listaAlunos.forEach(criarLinhaAluno)
 
+    if (! listaAlunos.length > 0 ){
+
+        tabelaAluno.textContent ="sem dados"
+    }
+    
     lucide.createIcons(); // renderiza os ícones do Lucide
+
 }
 
-
-
-
-function criarLinhaAluno(aluno) {
+function criarLinhaAluno(aluno){
     //paragrafo.textContent = paragrafo.textContent + aluno.nome
 
-    const linha = document.createElement('tr');
+    //linha 
+    const linha = document.createElement("tr");
 
-    const celulanome = document.createElement('td');
-    celulanome.textContent = aluno.nome
-
-    const celunaMatricula = document.createElement('td')
-    celunaMatricula.textContent = aluno.matricula
-
-
+    //nome
+    const celulanome = document.createElement("td");
+    celulanome.textContent = aluno.nome;
     linha.appendChild(celulanome);
-    linha.appendChild(celunaMatricula)
+
+    //matricula
+    const celulaMatricula = document.createElement("td");
+    celulaMatricula.textContent = aluno.matricula;   
+    linha.appendChild(celulaMatricula);
 
     //botao de modificar
+    const celulaBotao = document.createElement("td");
+    const botao = document.createElement("button");
+    botao.addEventListener("click", 
+                                    function () { mostrarDetalhes(aluno.nome,aluno.matricula,aluno.id)}
+                                );
+    botao.textContent = 'teste';    
+    
+    const icone = document.createElement("i")
+    icone.setAttribute("data-lucide", "edit");
+    botao.appendChild(icone);
 
-    const celulaBotao = document.createElement('td');
-    const botao = document.createElement('button');
-    botao.addEventListener('click', function () { mostrarDetalhes(aluno.id, aluno.nome, aluno.matricula) })
-    botao.style.backgroundColor = 'pink'
-    botao.style.borderRadius = '15px'
-
-    celulaBotao.appendChild(botao)
-    const icone = document.createElement('i')
-    icone.setAttribute('data-lucide', 'edit')
-    botao.appendChild(icone)
-    linha.appendChild(celulaBotao)
-
-
-    //---
-    tabelaAluno.appendChild(linha)
+    celulaBotao.appendChild(botao);
 
 
+    linha.appendChild(celulaBotao);
+
+
+    //final adiciono a linha criada com matricula,nome e botao à tabela
+    tabelaAluno.appendChild(linha);
 
 }
-//botao de exluir
-const botaoExluir = document.getElementById('btn-excluir')
-botaoExluir.addEventListener('click', deletarAluno)
 
-async function deletarAluno() {
-    console.log('teste')
-    const pID = modalIdAluno.value
-    console.log('deletando o id', pID)
-    //return
-    const retorno = await window.senacAPI.deletarAlunos(pID)
-    return retorno
-}
 
-function mostrarDetalhes(id, nome, matricula) {
-    modalIdAluno.value = id
-    modalNomeAluno.value = nome
-    modalMatriculaAluno.value = matricula
-}
 
-carregarAlunos()    
+
+carregarAlunos()
