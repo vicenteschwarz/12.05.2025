@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Alunos</title>
+    <title>Lista de Profs</title>
 
      <script src="https://unpkg.com/lucide@latest"></script>
      <link rel="stylesheet" href="style.css">
@@ -12,29 +12,29 @@
     <p id="teste"></p>
     <button id="btn-incluir">incluir</button>
 
-    <table class='table' id="alunosTable">
+    <table class='table' id="profsTable">
         <thead>
             <tr>
                 <th>Nome</th>
-                <th>Matricula</th>              
+                <th>Cpf</th>              
             </tr>
         </thead>
-        <tbody id="alunosTableDados">    
+        <tbody id="profsTableDados">    
         </tbody>
     </table>
 
 
     <!--modal-->
     <div id="modal" >
-        <h3>Edite os dados do Aluno:</h3>
+        <h3>Edite os dados do Professor:</h3>
 
-        <label>ID: <input type="text" id="aluno-id" readonly /> 
+        <label>ID: <input type="text" id="professor-id" readonly /> 
         </label>
         <br>
-        <label>Nome: <input type="text" id="aluno-nome">       
+        <label>Nome: <input type="text" id="professor-nome">       
         </label>
          <br>
-        <labe>Matricula: <input type="text" id="aluno-matricula">
+        <labe>Cpf: <input type="text" id="professor-cpf">
         </label>
         <br>
         <button id="btn-salvar">Salvar</button>
@@ -42,6 +42,6 @@
     </div>
 
 
-    <script src="aluno.js"></script>
+    <script src="professor.js"></script>
 </body>
 </html>

@@ -17,7 +17,7 @@ async function deletarAluno(event,pId){
 
 }
 
-async function atualizarAluno(event, pId ,pNome, pMatricula ){
+async function atualizarAluno(event,pNome, pMatricula, pId ){
     console.log('att', pId)
     console.log('teste handler', pId, pNome, pMatricula)
     const result = await db.query('UPDATE alunos SET nome=$1, matricula=$2 WHERE ID =$3',[pNome, pMatricula, pId])
