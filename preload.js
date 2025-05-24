@@ -48,3 +48,18 @@ contextBridge.exposeInMainWorld('senacAPI',
         inserirProfessor:inserirProfessor
     }
 )
+
+function windowAluno(){
+    ipcRenderer.send('window-alunos')
+}
+
+function windowProfessor(){
+    ipcRenderer.send('window-professores')
+}
+
+contextBridge.exposeInMainWorld('windowAPI',
+    {
+        windowAluno:windowAluno ,
+        windowProfessor:windowProfessor
+    }
+)

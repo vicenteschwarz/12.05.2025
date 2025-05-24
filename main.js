@@ -2,6 +2,7 @@ const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const { registrarAlunoHandler } = require('./alunoHandler')
 const { registrarProfessorHandler } = require('./professorHandler')
+const { registrarJanelas } = require('./janela_ipcmain')
 
 //aluno
 
@@ -14,7 +15,7 @@ function createMainWindow() {
         }
     });
 
-    mainWindow.loadFile('professor.html');
+    mainWindow.loadFile('index.html');
 }
 
 app.whenReady().then(function () {
@@ -22,6 +23,7 @@ app.whenReady().then(function () {
     createMainWindow();
     registrarAlunoHandler();
     registrarProfessorHandler();
+    registrarJanelas();
 
     app.on('activate', function () {
         if (BrowserWindow.getAllWindows().length === 0) {
@@ -34,7 +36,7 @@ app.whenReady().then(function () {
 
 
 app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit();
+    if (process.platform !== 'darwin') app.quit();
 });
 
 //professor
